@@ -64,9 +64,9 @@ def build_notice_file(sbom):
         app_name = "APPLICATION"
 
     # Truncate app name to 50 and remove chars that might cause filename issues
-    app_name = app_name[:50]
+    app_name_trunc = app_name[:50]
     specials = "\"\\/:*?<>|"
-    cleaned_name = "".join(c for c in app_name if c not in specials)
+    cleaned_name = "".join(c for c in app_name_trunc if c not in specials)
     filename = cleaned_name + "_notice.txt"
 
     with open(filename, 'w') as f:
