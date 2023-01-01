@@ -35,5 +35,4 @@ NOTE: The generated file will be named "\<APPLICATION\>_notice.txt". Plain text 
 **Example**
 ```
 > python generate_notice_file.py --app_name "Verademo application"
-
 ```
