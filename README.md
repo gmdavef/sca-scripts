@@ -22,13 +22,13 @@ Option 2 - Save your Veracode API credentials in environment variables as follow
     VERACODE_API_KEY_SECRET=<YOUR_API_KEY_SECRET>    
 
 ## generate_notice_file.py ##
-A script that generates a License Notice file (sometimes called an Attribution Report) for an application that has been scanned by Veracode SCA. This helps to comply with open source licenses, which require documenting the terms under which open source components have been made available. Plain text is the only file format supported at this time. Works with SCA upload scans currently (not agent-based scans).
+A script that generates a License Notice file (sometimes called an Attribution Report) for an application that has been scanned by Veracode SCA. This helps to comply with open source licenses, which require documenting the terms under which open source components have been made available. Currently works with SCA upload scans. Plain text is the only file format supported at this time.
 
 **Usage**
 
 `generate_notice_file.py [-h] --app_name APPLICATION`
 
-* `--app_name` the name of the application within Veracode (exact case required). Required.
+* `--app_name` the name of the application within Veracode (exact case required)
 
 NOTE: The generated file will be named "\<APPLICATION\>_notice.txt". 
 
