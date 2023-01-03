@@ -1,5 +1,5 @@
 # sca-scripts
-Python scripts to automate tasks or extend capabilities of Veracode Software Composition Analysis (SCA). These scripts leverage the Veracode API.
+Python scripts that leverage the Veracode API to automate tasks or extend capabilities of Veracode Software Composition Analysis (SCA). These scripts are not officially supported by Veracode.
 
 **Dependencies**
 
@@ -22,15 +22,15 @@ Option 2 - Save your Veracode API credentials in environment variables as follow
     VERACODE_API_KEY_SECRET=<YOUR_API_KEY_SECRET>    
 
 ## generate_notice_file.py ##
-This script generates a License Notice file (sometimes called an Attribution Report) for an application that has been scanned by Veracode SCA. This helps to comply with open source licenses, which require documenting the terms under which open source components have been made available.
+A script that generates a License Notice file (sometimes called an Attribution Report) for an application that has been scanned by Veracode SCA. This helps to comply with open source licenses, which require documenting the terms under which open source components have been made available. Currently works with SCA upload scans. Plain text is the only file format supported at this time.
 
 **Usage**
 
 `generate_notice_file.py [-h] --app_name APPLICATION`
 
-* `--app_name` the name of the application within Veracode (exact case required). Required.
+* `--app_name` the name of the application within Veracode (exact case required)
 
-NOTE: The generated file will be named "\<APPLICATION\>_notice.txt". Plain text is the only file format supported at this time. 
+NOTE: The generated file will be named "\<APPLICATION\>_notice.txt". 
 
 **Example**
 ```
