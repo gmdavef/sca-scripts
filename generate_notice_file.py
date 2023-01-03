@@ -151,7 +151,7 @@ def build_notice_file(sbom):
 def main():
 
     parser = argparse.ArgumentParser(description="This script takes application name as input and generates a Licenses Notice file for the open source software within that application.")
-    parser.add_argument("--app_name", required=True, help="Application name within the Veracode platform.")
+    parser.add_argument("-a", "--app_name", required=True, help="Application name within the Veracode platform.")
 
     args = parser.parse_args()
 
