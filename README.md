@@ -26,9 +26,10 @@ A script that generates a License Notice file (sometimes called an Attribution R
 
 **Usage**
 
-`generate_notice_file.py [-h] --app_name APPLICATION`
+`generate_notice_file.py [-h] <arguments>`
 
-* `--app_name` the name of the application within Veracode (exact case required)
+Arguments:
+* `-a` or `--app_name` `<APPLICATION>` - name of the application within Veracode (required).
 
 NOTE: The generated file will be named "\<APPLICATION\>_notice.txt". 
 
