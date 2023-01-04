@@ -99,10 +99,14 @@ def build_notice_file(sbom):
 
         # If SBOM has no components, write relevant message and return
         components = sbom["components"]
+        
         if (components is None or len(components)==0):
             print("No open source components", file=f)
             f.close()
             return filename
+
+        # Sort components by name (case insensitive)
+        components.sort(key=lambda x:x['name'].lower())
 
         # Loop on all components in the SBOM
         for c in components:
