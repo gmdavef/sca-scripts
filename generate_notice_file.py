@@ -1,8 +1,5 @@
-import sys
 import argparse
 import datetime
-
-from veracode_api_signing.plugin_requests import RequestsAuthPluginVeracodeHMAC
 
 from veracode_api_py import VeracodeAPI as vapi
 from veracode_api_py.sca import SBOM
@@ -45,7 +42,7 @@ def lookup_app_id(app_name):
 def generate_sbom(app_id):
 
     try:
-        sbom_dict = SBOM().get(app_id)
+        sbom_dict = SBOM().get(app_id, "cyclonedx", True)
         return sbom_dict
 
     except Exception as e:
@@ -150,7 +147,7 @@ def build_notice_file(sbom):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="This script takes application name as input and generates a Licenses Notice file for the open source software within that application.")
+    parser = argparse.ArgumentParser(description="This script takes application name as input and generates a Licenses Notice file for the open source software used by that application.")
     parser.add_argument("-a", "--app_name", required=True, help="Application name within the Veracode platform.")
 
     args = parser.parse_args()
