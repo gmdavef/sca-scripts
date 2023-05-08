@@ -1,10 +1,12 @@
 import argparse
 import datetime
+import json
 
 from veracode_api_py import VeracodeAPI as vapi
 from veracode_api_py.sca import SBOM
 
-def create_notice_file(app_name):
+
+def create_notice_file_from_app(app_name):
 
     print("Looking up application ID...")
     app_id = lookup_app_id(app_name)
@@ -24,6 +26,51 @@ def create_notice_file(app_name):
 
     return filename
 
+def generate_sbom(app_id):
+
+    try:
+        sbom_dict = SBOM().get(app_id, "cyclonedx", True)
+        return sbom_dict
+
+    except Exception as e:
+       print("Error trying to generate the SBOM. Do SCA results exist for this application? An SCA scan needs to have been done in the last 13 months.")
+       return None
+    
+
+def create_notice_file_from_sbom(sbom_file):
+
+    print("Loading the SBOM...")
+    sbom_dict = load_sbom(sbom_file)
+    if (sbom_dict is None):
+        return None
+
+    print("Building notice file...")
+    filename = build_notice_file(sbom_dict)
+    if (filename is None):
+        return None
+
+    return filename
+
+
+def load_sbom(sbom_file):
+
+    # Load from file
+    try:
+        file1 = open(sbom_file, "r")
+        sbom_str = file1.read()
+        file1.close()   
+    except FileNotFoundError as e:
+        print("That file doesn't seem to exist. Please try again.")        
+        return None
+    except UnicodeDecodeError as e:
+        print(e)
+        print("File has some unexpected characters. Please make sure it's a CycloneDX-compliant SBOM and try again.")
+        return None
+
+    sbom_json = json.loads(sbom_str)
+
+    return sbom_json
+    
 
 def lookup_app_id(app_name):
 
@@ -38,21 +85,19 @@ def lookup_app_id(app_name):
 
     return None
 
-       
-def generate_sbom(app_id):
-
-    try:
-        sbom_dict = SBOM().get(app_id, "cyclonedx", True)
-        return sbom_dict
-
-    except Exception as e:
-       print("Error trying to generate the SBOM. Do SCA results exist for this application? An SCA scan needs to have been done in the last 13 months.")
-       return None
-    
 
 def build_notice_file(sbom):
 
-    # Expected input to this function is a CycloneDX SBOM in JSON format
+    # Verify that input is a CycloneDX SBOM in JSON format
+    try:
+        bom_format = sbom["bomFormat"]
+    except KeyError as e:
+        print("Error: 'bomFormat' element not found. A CycloneDX SBOM in JSON format is required.")        
+        return None    
+
+    if (bom_format != "CycloneDX"):
+        print("Error: 'bomFormat' is not 'CycloneDX' as expected.")        
+        return None  
 
     # Grab the application name from the SBOM
     metadata = sbom["metadata"]
@@ -80,7 +125,7 @@ def build_notice_file(sbom):
         print("==============================================================================", file=f)
         print("", file=f)
         print("APPLICATION NAME: " + app_name, file=f)
-        print("DATA SOURCE:      Veracode Software Composition Analysis (SCA) / SBOM API", file=f)
+        print("DATA SOURCE:      " + data_source, file=f)
         print("GENERATED:        " + (datetime.datetime.now()).strftime("%c"), file=f)
         print("", file=f)
 
@@ -151,13 +196,25 @@ def build_notice_file(sbom):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="This script takes application name as input and generates a Licenses Notice file for the open source software used by that application.")
-    parser.add_argument("-a", "--app_name", required=True, help="Application name within the Veracode platform.")
+    parser = argparse.ArgumentParser(description="This script takes either a Veracode application or an SBOM file as input and generates a License Notice file for the open source software present.")
+    parser.add_argument("-a", "--app_name", required=False, help="Application name within the Veracode platform.")
+    parser.add_argument("-s", "--sbom_file", required=False, help="CycloneDX SBOM file to use as input.")
 
     args = parser.parse_args()
+    app_name = args.app_name
+    sbom_file = args.sbom_file
 
-    app_name = args.app_name.strip()
-    filename = create_notice_file(app_name)
+    if (app_name is None and sbom_file is None):
+        print("Error: Either --app_name or --sbom_file must be specified.")
+        return
+    
+    global data_source
+    if (app_name is not None):
+        data_source = "Veracode Software Composition Analysis (SCA) / SBOM API"
+        filename = create_notice_file_from_app(app_name.strip())
+    elif (sbom_file is not None):
+        data_source = "Local SBOM file"   
+        filename = create_notice_file_from_sbom(sbom_file.strip())
 
     if filename is not None:
         print("Success! Created file \"" + filename + "\"")
