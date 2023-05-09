@@ -69,17 +69,17 @@ def search(sbom, component):
         lib_ver = c.get("version") if c.get("version") else " "
             
         # Look for match
-        if (component in lib_name):
-            print("Found match: " + lib_name + ", Component type: " + comp_type)
+        if (component.lower() in lib_name.lower()):
+            print("Found match: " + lib_name + ", Version: " + lib_ver + ", Component type: " + comp_type)
             num_found += 1
 
     return num_found
 
 def main():
 
-    parser = argparse.ArgumentParser(description="This script takes either a Veracode application or an SBOM file as input and generates a License Notice file for the open source software present.")
+    parser = argparse.ArgumentParser(description="This script takes a component name and an SBOM as input and returns any matches that are found.")
     parser.add_argument("-s", "--sbom_file", required=True, help="CycloneDX SBOM file to search.")
-    parser.add_argument("-c", "--component", required=True, help="Component/library to search on.")
+    parser.add_argument("-c", "--component", required=True, help="Component/library name you want to search for.")
 
     args = parser.parse_args()
     sbom_file = args.sbom_file
