@@ -2,22 +2,23 @@
 Various Python scripts to automate tasks or extend capabilities of Software Composition Analysis (SCA) tools or to work with Software Bills of Material (SBOMs).
 
 ## search_sbom.py ##
-This script searches the given SBOM(s) for the presence of a specific component. Only SBOMs in CycloneDX JSON format are supported. The search is case insensitive.
+This script searches the given SBOM(s) for the presence of a specific component. Only SBOMs in CycloneDX JSON format are supported. The search is case insensitive. Partial matches are included.
 
 **Usage**
 
 `search_sbom.py [-h] <arguments>`
 
-Both of these arguments must be provided:
-* `-s` or `--sbom_file` `<FILE>` - file name of a CycloneDX SBOM in JSON format. If set to 'ALL', every .json file in current directory will be searched.
-* `-c` or `--component` `<COMPONENT>` - name of the component/library you want to search for.
+Arguments:
+* `-s` or `--sbom_file` `<FILE>` - (required) Name of a CycloneDX SBOM file in JSON format. If set to 'ALL', every .json file in current directory will be searched
+* `-c` or `--component` `<COMPONENT>` - (required) Name of the component/library you want to search for
+* `-o` or `--output_csv` `<CSV_FILE>` - (optional) Name of CSV file where the results (if any) will be output
 
 **Examples**
 ```
 > python search_sbom.py --sbom_file MyJavaApp_sbom.json --component log4j
 ```
 ```
-> python search_sbom.py --sbom_file ALL --component ua-parser-js
+> python search_sbom.py --sbom_file ALL --component ua-parser-js -o results.csv
 ```
 ## generate_notice_file.py ##
 This script generates a simple License Notice file (sometimes called an Attribution Report) to help to comply with open source licenses, which require a notice to describe the terms under which open source components have been made available in a piece of software. Plain text is the only output file format at this time.
